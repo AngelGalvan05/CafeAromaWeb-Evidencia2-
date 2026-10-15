@@ -1,0 +1,35 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+@* Encabezado con el saludo y la fecha calculados en el servidor (OnGet). *@
+<section class="portada mb-5">
+    <p class="mb-1 text-uppercase small">@Model.Fecha.ToString("dddd d 'de' MMMM 'de' yyyy")</p>
+    <h1 class="display-5 fw-bold">@Model.Saludo, bienvenido a Café Aroma</h1>
+    <p class="lead mb-4">Café de especialidad, pan recién horneado y un lugar tranquilo para quedarse.</p>
+    <a asp-page="/Pedido" class="btn btn-crema btn-lg">Haz tu pedido</a>
+    <a asp-page="/Menu" class="btn btn-outline-light btn-lg ms-2">Ver menú</a>
+</section>
+
+<h2 class="h3 mb-3">Productos destacados</h2>
+<div class="row g-4">
+    @* Se recorre la lista Destacados con @foreach para generar una tarjeta por producto. *@
+    @foreach (var producto in Model.Destacados)
+    {
+        <div class="col-md-4">
+            <div class="card h-100 tarjeta-producto shadow-sm">
+                <div class="card-body">
+                    <span class="badge text-bg-secondary mb-2">@producto.Categoria</span>
+                    <h3 class="h5 card-title">@producto.Nombre</h3>
+                    <p class="card-text">@producto.Descripcion</p>
+                    <p class="precio mb-0">@producto.Precio.ToString("C")</p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-page="/Pedido" asp-route-producto="@producto.Id" class="btn btn-cafe btn-sm">Pedir este</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

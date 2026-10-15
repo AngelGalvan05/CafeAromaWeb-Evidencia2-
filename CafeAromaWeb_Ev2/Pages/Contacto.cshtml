@@ -1,0 +1,92 @@
+@page
+@model ContactoModel
+@{
+    ViewData["Title"] = "Contacto";
+}
+
+<h1 class="mb-3">Contacto</h1>
+
+@* Aviso calculado en el servidor con la función EstaAbierto(). *@
+@if (Model.Abierto)
+{
+    <div class="alert alert-success">¡Estamos abiertos! Te esperamos hasta las @(ContactoModel.HoraCierre):00 h.</div>
+}
+else
+{
+    <div class="alert alert-secondary">En este momento estamos cerrados. Abrimos a las @(ContactoModel.HoraApertura):00 h.</div>
+}
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4">Visítanos</h2>
+                <ul class="list-unstyled mb-0">
+                    <li><strong>Dirección:</strong> Av. Universidad 123, Col. Centro, Monterrey, N. L.</li>
+                    <li><strong>Teléfono:</strong> 81 1234 5678</li>
+                    <li><strong>Correo:</strong> hola@@cafearoma.mx</li>
+                    <li><strong>Horario:</strong> lunes a domingo, @(ContactoModel.HoraApertura):00 a @(ContactoModel.HoraCierre):00 h</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4">¿Llegas a tiempo?</h2>
+                <p>Hora en tu equipo: <strong id="lblReloj">--:--</strong></p>
+                <p class="text-muted small">Indica cuántos minutos tardas en llegar y te decimos si nos encontrarás abiertos.</p>
+                <button id="btnLlegada" type="button" class="btn btn-cafe">Calcular llegada</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Los valores del horario se toman del PageModel para no repetirlos en JavaScript.
+        const HORA_APERTURA = @ContactoModel.HoraApertura;
+        const HORA_CIERRE = @ContactoModel.HoraCierre;
+
+        /** Misma regla que EstaAbierto() del servidor, pero evaluada en el cliente. */
+        function estaAbiertoCliente(fecha) {
+            const hora = fecha.getHours();
+            return hora >= HORA_APERTURA && hora < HORA_CIERRE;
+        }
+
+        /** Escribe la hora actual en el elemento lblReloj (acceso al DOM). */
+        function actualizarReloj() {
+            const ahora = new Date();
+            document.getElementById("lblReloj").textContent =
+                ahora.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+        }
+
+        /**
+         * Pide los minutos con prompt(), valida el dato y responde con alert().
+         * Usa las funciones predefinidas parseInt() e isNaN().
+         */
+        function calcularLlegada() {
+            const respuesta = prompt("¿Cuántos minutos tardas en llegar a Café Aroma?", "15");
+            if (respuesta === null) return;               // el usuario pulsó Cancelar
+
+            const minutos = parseInt(respuesta, 10);
+            if (isNaN(minutos) || minutos < 0 || minutos > 600) {
+                alert("Escribe un número de minutos válido (de 0 a 600).");
+                return;
+            }
+
+            const llegada = new Date(Date.now() + minutos * 60000);
+            const horaTexto = llegada.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+
+            if (estaAbiertoCliente(llegada)) {
+                alert("Llegarías a las " + horaTexto + ". ¡Te esperamos, estaremos abiertos!");
+            } else {
+                alert("Llegarías a las " + horaTexto + ". A esa hora estaremos cerrados; abrimos a las " + HORA_APERTURA + ":00 h.");
+            }
+        }
+
+        document.getElementById("btnLlegada").addEventListener("click", calcularLlegada);
+        actualizarReloj();
+        setInterval(actualizarReloj, 30000); // función predefinida: repite cada 30 s
+    </script>
+}

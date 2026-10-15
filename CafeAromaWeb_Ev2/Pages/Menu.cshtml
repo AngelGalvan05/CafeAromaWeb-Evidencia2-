@@ -1,0 +1,98 @@
+@page
+@model MenuModel
+@{
+    ViewData["Title"] = "Menú";
+}
+
+<h1 class="mb-3">Menú</h1>
+
+@* Controles de filtro: funcionan en el CLIENTE con JavaScript (sin recargar la página). *@
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <label for="txtBuscar" class="form-label">Buscar producto</label>
+        <input id="txtBuscar" type="search" class="form-control" placeholder="Ej. latte, pan..." autocomplete="off" />
+    </div>
+    <div class="col-md-4">
+        <label for="selCategoria" class="form-label">Categoría</label>
+        <select id="selCategoria" class="form-select">
+            <option value="">Todas</option>
+            @foreach (var categoria in Model.Categorias)
+            {
+                <option value="@categoria">@categoria</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <span id="lblConteo" class="text-muted small"></span>
+    </div>
+</div>
+
+@* Agrupa los productos por categoría y genera una tabla por cada grupo. *@
+@foreach (var grupo in Model.Productos.GroupBy(p => p.Categoria))
+{
+    <section class="grupo-menu mb-4" data-categoria="@grupo.Key">
+        <h2 class="h4">@grupo.Key</h2>
+        <table class="table table-striped bg-white">
+            <thead>
+                <tr><th>Producto</th><th>Descripción</th><th class="text-end">Precio</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var producto in grupo)
+                {
+                    <tr class="fila-producto" data-nombre="@producto.Nombre">
+                        <td>@producto.Nombre</td>
+                        <td class="text-muted">@producto.Descripcion</td>
+                        <td class="text-end">@producto.Precio.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+}
+<p id="msgSinResultados" class="alert alert-warning d-none">No hay productos que coincidan con la búsqueda.</p>
+
+@section Scripts {
+    <script>
+        // ===== Filtro del menú en el cliente =====
+        // Lee el texto y la categoría elegidos y oculta las filas que no coinciden.
+
+        /**
+         * Quita acentos y pasa a minúsculas para comparar sin importar cómo se escriba.
+         * Ej.: "Té Chai" -> "te chai". Usa métodos del objeto String.
+         */
+        function simplificarTexto(texto) {
+            return texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+        }
+
+        /** Aplica los dos filtros y actualiza el contador de resultados. */
+        function filtrarMenu() {
+            const busqueda = simplificarTexto(document.getElementById("txtBuscar").value);
+            const categoria = document.getElementById("selCategoria").value;
+            let visibles = 0;
+
+            document.querySelectorAll(".grupo-menu").forEach(function (grupo) {
+                const categoriaCoincide = categoria === "" || grupo.dataset.categoria === categoria;
+                let filasVisiblesGrupo = 0;
+
+                grupo.querySelectorAll(".fila-producto").forEach(function (fila) {
+                    const nombre = simplificarTexto(fila.dataset.nombre);
+                    const mostrar = categoriaCoincide && nombre.includes(busqueda);
+                    fila.classList.toggle("d-none", !mostrar);
+                    if (mostrar) filasVisiblesGrupo++;
+                });
+
+                // Si un grupo se queda sin filas visibles, se oculta completo.
+                grupo.classList.toggle("d-none", filasVisiblesGrupo === 0);
+                visibles += filasVisiblesGrupo;
+            });
+
+            document.getElementById("lblConteo").textContent = visibles + (visibles === 1 ? " producto" : " productos");
+            document.getElementById("msgSinResultados").classList.toggle("d-none", visibles > 0);
+        }
+
+        // Eventos de la interfaz: "input" al escribir y "change" al elegir categoría.
+        document.getElementById("txtBuscar").addEventListener("input", filtrarMenu);
+        document.getElementById("selCategoria").addEventListener("change", filtrarMenu);
+        filtrarMenu(); // muestra el conteo inicial
+    </script>
+}

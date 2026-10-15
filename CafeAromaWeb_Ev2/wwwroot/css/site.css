@@ -1,0 +1,58 @@
+/* ===========================================================
+   CafeAromaWeb - Estilos generales (paleta café)
+   =========================================================== */
+:root {
+  --cafe-oscuro: #3e2723;
+  --cafe: #6d4c41;
+  --crema: #f3e5d0;
+  --crema-clara: #fbf6ef;
+}
+
+html {
+  font-size: 14px;
+  position: relative;
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  html { font-size: 16px; }
+}
+
+body {
+  margin-bottom: 60px;
+  background-color: var(--crema-clara);
+}
+
+.barra-cafe { background-color: var(--cafe-oscuro); }
+.barra-cafe .nav-link { color: var(--crema); }
+.barra-cafe .nav-link:hover { color: #fff; }
+
+.btn-crema { background-color: var(--crema); color: var(--cafe-oscuro); font-weight: 600; }
+.btn-crema:hover { background-color: #fff; color: var(--cafe-oscuro); }
+
+.btn-cafe { background-color: var(--cafe); color: #fff; }
+.btn-cafe:hover { background-color: var(--cafe-oscuro); color: #fff; }
+
+.portada {
+  background: linear-gradient(135deg, var(--cafe-oscuro), var(--cafe));
+  color: var(--crema);
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
+}
+
+.tarjeta-producto { border-color: var(--crema); }
+.tarjeta-producto .precio { color: var(--cafe); font-weight: 700; font-size: 1.25rem; }
+
+h1, h2, h3 { color: var(--cafe-oscuro); }
+.portada h1 { color: #fff; }
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #a1887f;
+}
+
+/* Campos marcados por la validación en el cliente */
+.input-validation-error { border-color: #dc3545; }
+
+.total-estimado { font-size: 1.5rem; font-weight: 700; color: var(--cafe-oscuro); }
+
+.footer { line-height: 60px; }

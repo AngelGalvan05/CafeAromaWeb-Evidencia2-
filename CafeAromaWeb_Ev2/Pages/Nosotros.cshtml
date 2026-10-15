@@ -1,0 +1,54 @@
+@page
+@model NosotrosModel
+@{
+    ViewData["Title"] = "Nosotros";
+}
+
+<h1 class="mb-3">Nosotros</h1>
+<p class="lead">
+    Café Aroma abrió sus puertas en @NosotrosModel.AnioFundacion. Llevamos <strong>@Model.AniosServicio años</strong>
+    sirviendo café de grano mexicano tostado en pequeños lotes.
+</p>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h2 class="h4">Misión</h2>
+                <p class="mb-0">Ofrecer café de calidad y alimentos frescos en un espacio cálido, con un servicio
+                    rápido y amable que haga de cada visita un buen momento del día.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h2 class="h4">Visión</h2>
+                <p class="mb-0">Ser la cafetería de referencia del barrio, reconocida por su café de origen
+                    mexicano y por apoyar a productores locales.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="h4">Nuestra historia</h2>
+<p>Todo empezó con una barra de seis bancos y una cafetera de dos grupos. Hoy tostamos nuestro propio café
+    y preparamos el pan cada mañana.</p>
+
+@* El texto adicional se muestra u oculta con JavaScript al pulsar el botón. *@
+<div id="historiaCompleta" class="d-none">
+    <p>Trabajamos directamente con productores de Veracruz, Chiapas y Oaxaca, y cada temporada elegimos
+        un café de origen distinto para nuestro espresso de la casa.</p>
+</div>
+<button id="btnHistoria" type="button" class="btn btn-outline-secondary btn-sm">Leer más</button>
+
+@section Scripts {
+    <script>
+        // Evento click: alterna la visibilidad del texto y cambia la etiqueta del botón (DOM).
+        document.getElementById("btnHistoria").addEventListener("click", function () {
+            const bloque = document.getElementById("historiaCompleta");
+            const estaOculto = bloque.classList.toggle("d-none");
+            this.textContent = estaOculto ? "Leer más" : "Leer menos";
+        });
+    </script>
+}

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Espacio de nombres y nombre del ensamblado del sitio CafeAromaWeb -->
+    <RootNamespace>CafeAromaWeb</RootNamespace>
+    <AssemblyName>CafeAromaWeb_Ev2</AssemblyName>
+  </PropertyGroup>
+
+</Project>
