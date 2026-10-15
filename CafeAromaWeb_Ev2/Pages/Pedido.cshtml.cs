@@ -13,10 +13,8 @@ namespace CafeAromaWeb.Pages;
 public class PedidoModel : PageModel
 {
     // ----- Reglas de precio (una sola fuente; la vista las envía también al cliente) -----
-    public static readonly string[] Tamanos = { "Chico", "Mediano", "Grande" };
-
-    /// <summary>Recargo por unidad según el tamaño elegido.</summary>
-    public static readonly Dictionary<string, decimal> RecargosTamano = new()
+    public static readonly string[] Tamaños = { "Chico", "Mediano", "Grande" };
+    public static readonly Dictionary<string, decimal> RecargosTamaño = new()
     {
         ["Chico"] = 0m,
         ["Mediano"] = 10m,
@@ -24,23 +22,21 @@ public class PedidoModel : PageModel
     };
 
     public static readonly string[] ExtrasDisponibles = { "Leche de almendra", "Shot extra de café", "Crema batida" };
-    public const decimal PrecioExtra = 10m;   // por cada extra y por unidad
-    public const decimal CostoEnvio = 30m;    // cargo fijo por entrega a domicilio
+    public const decimal PrecioExtra = 10m;   
+    public const decimal CostoEnvio = 30m;    
 
-    // Todos los controles del formulario se enlazan a este objeto (model binding).
     [BindProperty]
     public PedidoDatos Datos { get; set; } = new();
 
-    // Elementos de la lista desplegable, generados desde el catálogo.
     public List<SelectListItem> ListaProductos { get; } = Catalogo.Productos
         .Select(p => new SelectListItem($"{p.Nombre} - {p.Precio:C}", p.Id.ToString()))
         .ToList();
 
-    // Precio de cada producto por Id; la vista lo serializa a JSON para el cálculo en el cliente.
+
     public Dictionary<int, decimal> PreciosProductos { get; } =
         Catalogo.Productos.ToDictionary(p => p.Id, p => p.Precio);
 
-    // Resultado del pedido; son nulos hasta que se envía un formulario válido.
+
     public Producto? ProductoElegido { get; private set; }
     public decimal? Total { get; private set; }
 
@@ -56,17 +52,15 @@ public class PedidoModel : PageModel
         }
     }
 
-    /// <summary>Se ejecuta al enviar el formulario (POST).</summary>
+
     public IActionResult OnPost()
     {
-        // Se ignoran valores que no pertenezcan a las listas oficiales (protección contra datos alterados).
         Datos.Extras = DepurarExtras(Datos.Extras);
-        if (Datos.Tamano is not null && !Tamanos.Contains(Datos.Tamano))
+        if (Datos.Tamaño is not null && !Tamaños.Contains(Datos.Tamaño))
         {
-            ModelState.AddModelError("Datos.Tamano", "Seleccione un tamaño válido.");
+            ModelState.AddModelError("Datos.Tamaño", "Seleccione un tamaño válido.");
         }
 
-        // La validación del navegador puede omitirse, así que el servidor siempre revisa ModelState.
         if (!ModelState.IsValid)
         {
             return Page();
@@ -96,9 +90,9 @@ public class PedidoModel : PageModel
     /// </summary>
     public static decimal CalcularTotal(Producto producto, PedidoDatos datos)
     {
-        decimal recargoTamano = RecargosTamano.GetValueOrDefault(datos.Tamano ?? "", 0m);
+        decimal recargoTamaño = RecargosTamaño.GetValueOrDefault(datos.Tamaño ?? "", 0m);
         decimal recargoExtras = datos.Extras.Count * PrecioExtra;
-        decimal subtotal = (producto.Precio + recargoTamano + recargoExtras) * datos.Cantidad!.Value;
+        decimal subtotal = (producto.Precio + recargoTamaño + recargoExtras) * datos.Cantidad!.Value;
         decimal envio = datos.EntregaDomicilio ? CostoEnvio : 0m;
         return subtotal + envio;
     }
@@ -122,7 +116,7 @@ public class PedidoDatos
     [RegularExpression(@"^\d{10}$", ErrorMessage = "El teléfono debe tener 10 dígitos.")]
     public string Telefono { get; set; } = "";
 
-    // Lista desplegable (select).
+
     [Display(Name = "Producto")]
     [Required(ErrorMessage = "Seleccione un producto.")]
     public int? ProductoId { get; set; }
@@ -132,20 +126,17 @@ public class PedidoDatos
     [Range(1, 10, ErrorMessage = "La cantidad debe estar entre 1 y 10.")]
     public int? Cantidad { get; set; } = 1;
 
-    // Botones de opción (radio): una sola selección.
+
     [Display(Name = "Tamaño")]
     [Required(ErrorMessage = "Seleccione un tamaño.")]
-    public string? Tamano { get; set; }
+    public string? Tamaño { get; set; }
 
-    // Casillas de verificación (checkbox) con varias selecciones.
+
     public List<string> Extras { get; set; } = new();
 
-    // Casilla individual (checkbox) para entrega a domicilio.
     [Display(Name = "Entrega a domicilio")]
     public bool EntregaDomicilio { get; set; }
 
-    // Regla de negocio: la dirección es obligatoria solo si hay entrega a domicilio.
-    // El atributo personalizado RequeridoSi valida en el servidor y en el cliente.
     [Display(Name = "Dirección de entrega")]
     [RequeridoSi(nameof(EntregaDomicilio), ErrorMessage = "La dirección es obligatoria para entrega a domicilio.")]
     [StringLength(120, ErrorMessage = "La dirección no puede exceder 120 caracteres.")]

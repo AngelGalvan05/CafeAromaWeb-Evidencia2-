@@ -8,7 +8,6 @@ public class MenuModel : PageModel
 {
     public List<Producto> Productos { get; private set; } = new();
 
-    /// <summary>Categorías distintas del catálogo; llenan la lista desplegable de filtro.</summary>
     public List<string> Categorias { get; private set; } = new();
 
     public void OnGet()

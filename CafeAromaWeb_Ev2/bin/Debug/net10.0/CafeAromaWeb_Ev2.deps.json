@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "CafeAromaWeb_Ev2/1.0.0": {
+        "runtime": {
+          "CafeAromaWeb_Ev2.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CafeAromaWeb_Ev2/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

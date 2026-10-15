@@ -5,7 +5,7 @@ namespace CafeAromaWeb.Pages;
 /// <summary>Página Contacto: datos de la cafetería y aviso de si está abierta.</summary>
 public class ContactoModel : PageModel
 {
-    // Horario de servicio: de 8:00 a 20:00 todos los días.
+
     public const int HoraApertura = 8;
     public const int HoraCierre = 20;
 
