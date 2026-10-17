@@ -14,7 +14,7 @@
         <div class="card-header bg-success text-white">Pedido registrado</div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item"><strong>Cliente:</strong> @Model.Datos.Nombre (@Model.Datos.Correo, @Model.Datos.Telefono)</li>
-            <li class="list-group-item"><strong>Producto:</strong> @Model.ProductoElegido!.Nombre x @Model.Datos.Cantidad, tamaño @Model.Datos.Tamano</li>
+            <li class="list-group-item"><strong>Producto:</strong> @Model.ProductoElegido!.Nombre x @Model.Datos.Cantidad, tamaño @Model.Datos.Tamaño</li>
             <li class="list-group-item"><strong>Extras:</strong> @(Model.Datos.Extras.Any() ? string.Join(", ", Model.Datos.Extras) : "Ninguno")</li>
             <li class="list-group-item"><strong>Entrega:</strong> @(Model.Datos.EntregaDomicilio ? "A domicilio en " + Model.Datos.Direccion : "Recoger en tienda")</li>
             <li class="list-group-item fs-5"><strong>Total:</strong> @Model.Total.Value.ToString("C")</li>
@@ -72,19 +72,19 @@ else
                 <!-- RadioButton: una sola opción. data-recargo lleva el precio extra de cada tamaño. -->
                 <fieldset class="mb-3">
                     <legend class="fs-6 fw-semibold">Tamaño</legend>
-                    @foreach (var tamano in PedidoModel.Tamanos)
+                    @foreach (var tamaño in PedidoModel.Tamaños)
                     {
-                        var recargo = PedidoModel.RecargosTamano[tamano];
+                        var recargo = PedidoModel.RecargosTamaño[tamaño];
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" asp-for="Datos.Tamano"
-                                   id="tamano_@tamano" value="@tamano"
+                            <input class="form-check-input" type="radio" asp-for="Datos.Tamaño"
+                                   id="tamano_@tamaño" value="@tamaño"
                                    data-recargo="@recargo.ToString(CultureInfo.InvariantCulture)" />
-                            <label class="form-check-label" for="tamano_@tamano">
-                                @tamano @(recargo > 0 ? $"(+{recargo:C})" : "")
+                            <label class="form-check-label" for="tamano_@tamaño">
+                                @tamaño @(recargo > 0 ? $"(+{recargo:C})" : "")
                             </label>
                         </div>
                     }
-                    <div><span asp-validation-for="Datos.Tamano" class="text-danger"></span></div>
+                    <div><span asp-validation-for="Datos.Tamaño" class="text-danger"></span></div>
                 </fieldset>
 
                 <!-- CheckBox: varias selecciones (comparten name="Datos.Extras") -->
